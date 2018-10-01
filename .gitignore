@@ -1,4 +1,5 @@
-project
-!project/plugins.sbt
-.metals
-target
+/project
+!/project/plugins.sbt
+/.metals
+/target
+/codegen/target

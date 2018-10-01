@@ -6,10 +6,10 @@ import scalajs.js.annotation._
 import scalajs.js.JSConverters._
 
 package object htmlDslTypes {
-    type VNodeApplicable = (VNode) => Unit
+    type VNodeApplicable[T <: VNode] = (T) => Unit
 
     object Implicits {
-        implicit def vnode2applicable(vnode: VNode): VNodeApplicable =
+        implicit def vnode2applicable(vnode: VNode): VNodeApplicable[VNode] =
             (vn: VNode) => (vn.body: Any) match {
                 case body: String => {
                     vn.body = js.Array[js.Any](body, vnode)
@@ -19,7 +19,7 @@ package object htmlDslTypes {
                 }
                 case null | () => { vn.body = js.Array[js.Any](vnode) }
             }
-        implicit def string2applicable(str: String): VNodeApplicable =
+        implicit def string2applicable(str: String): VNodeApplicable[VNode] =
             (vn: VNode) => {vn.body: Any} match {
                 case body: js.Array[_] => {
                     body.asInstanceOf[js.Array[js.Any]].push(str)
@@ -29,15 +29,15 @@ package object htmlDslTypes {
     }
 
     case class Tag[T <: VNode](name: String) {
-        def apply(applicables: VNodeApplicable*) = {
-            var vnode = new VNode {
+        def apply(applicables: VNodeApplicable[T]*) = {
+            var vnode = (new VNode {
                 @JSName("type")
                 val nodeType = 1
                 val flags = 0 // TODO
                 val attrs = js.Dictionary.empty
                 val tag = name
                 var body = ()
-            }
+            }).asInstanceOf[T]
             for(applicable <- applicables) {
                 applicable(vnode)
             }
@@ -45,15 +45,12 @@ package object htmlDslTypes {
         }
     }
 
-    object AttrTypes {
-    }
-
     def toJsType(x: Any) = x match {
         case x: Seq[_] => x.toJSArray
         case x => x
     }
-    case class Attr[T](name: String) {
+    case class Attr[N <: VNode, T](name: String) {
         def := (value: T) =
-            (vnode: VNode) => { vnode.attrs(name) = toJsType(value) }
+            (vnode: N) => { vnode.attrs(name) = toJsType(value) }
     }
 }
