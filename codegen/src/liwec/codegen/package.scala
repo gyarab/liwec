@@ -12,7 +12,7 @@ class TypeNamer {
 
     def attrGroupTypeName(applicableEls: Option[Seq[String]]) =
         applicableEls match {
-            case None => "VNode"
+            case None => "ElementVNode"
             case Some(Seq(tag)) => s"VNodeTag${makePascalCase(tag)}"
             case _ => { i += 1; s"AttrApplicable$i" }
         }
@@ -49,7 +49,7 @@ object Codegen {
             agts.flatMap { case (as, agt) => as.map((_, agt)) }
         val attrGroupTypes =
             agtsByAttr.values.toSet
-            .filter(n => n != "VNode" && ! n.matches("^VNodeTag.*"))
+            .filter(n => n != "ElementVNode" && ! n.matches("^VNodeTag.*"))
         val elsWithType =
             els.map(el => (el, typeNamer.elTypeName(el)))
         val elTypesWithExtends =
@@ -82,6 +82,7 @@ package liwec
 import scalajs.js
 import org.scalajs.dom._
 import liwec.htmlDslTypes._
+import liwec.domvm._
 
 package object htmlDsl {
     // Event types that aren't in scalajs-dom
@@ -104,7 +105,7 @@ package object htmlDsl {
 
 """ +
     (for(attrGroupType <- attrGroupTypes) yield
-        s"""    trait $attrGroupType extends VNode""").mkString("\n") +
+        s"""    trait $attrGroupType extends ElementVNode""").mkString("\n") +
 "\n" +
     (for((attr, agt) <- agtsByAttr) yield
         s"""
@@ -115,12 +116,13 @@ package object htmlDsl {
     (for(ev <- events) yield
         s"""
     lazy val on${attrName(ev.name)} = """ +
-        s"""Attr[VNode, js.Function1[${ev.jsType}, Unit]]("on${ev.name}")""")
+        s"""Attr[ElementVNode, js.Function1[${ev.jsType}, Unit]]""" +
+        s"""("on${ev.name}")""")
     .mkString("") +
 "\n" +
     (for((elType, exts) <- elTypesWithExtends) yield
         s"""
-    trait $elType extends VNode """ +
+    trait $elType extends ElementVNode """ +
         (if(exts.size > 0) " with " + exts.mkString(" with ") else "")
     ).mkString("") +
 "\n" +
