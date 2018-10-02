@@ -30,4 +30,6 @@ class ViewModel(view: js.Function1[ViewModel, js.Function0[VNode]],
                 data: js.Any = js.undefined,
                 key: js.Any = js.undefined,
                 opts: js.Any = js.undefined) extends js.Object {
+    var redrawQueued: js.UndefOr[Boolean] = js.native // Added by liwec
+    def redraw(): Unit = js.native
 }
