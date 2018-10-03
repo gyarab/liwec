@@ -9,7 +9,7 @@ import liwec._
 class Counter(var n: Int) extends Component {
     def render() = {
         var m = 0
-        ul(for(i <- (1 to n)) yield
+        ul(for(i <- 1 to n) yield
             // TODO: Deal with compiler bug (n += 1 doesn't work)
             li(s"Item no $i", onclick := {e =>
                 this.n = this.n + 1
