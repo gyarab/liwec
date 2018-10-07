@@ -37,6 +37,23 @@ package object htmlDslTypes {
                 extends VNodeApplicable[T] {
             def applyTo(vn: T) = for(appl <- travOnce) appl.applyTo(vn)
         }
+        implicit class VNodeApplicableJsIterable[-T <: ElementVNode]
+                (iterable: js.Iterable[VNodeApplicable[T]])
+                extends VNodeApplicable[T] {
+            def applyTo(vn: T) = for(appl <- iterable) appl.applyTo(vn)
+        }
+        implicit class JsArraySyncMap[T](arr: js.Array[T]) {
+            def syncMapWithIndex[C <: Component]
+                    (itemGetter: C => T, constructor: (T, Int) => C) =
+                for((item, i) <- arr.zipWithIndex) yield
+                    constructor(item, i) onChange { c =>
+                        arr(i) = itemGetter(c)
+                    }
+            def syncMap[C <: Component]
+                    (itemGetter: C => T, constructor: T => C) =
+                syncMapWithIndex(
+                    itemGetter, { case (item, _) => constructor(item) })
+        }
     }
 
     case class Tag[T <: ElementVNode](name: String) {

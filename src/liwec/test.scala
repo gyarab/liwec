@@ -1,21 +1,33 @@
 package liwec.test
 
 import scalajs.js
+import scalajs.js.JSConverters._
 import scalajs.js.annotation._
 import liwec.htmlDslTypes.Implicits._
 import liwec.htmlDsl._
 import liwec._
 
-class Counter(var n: Int) extends Component {
+case class Task(val text: String, val completed: Boolean = false)
+
+class TaskComponent(var task: Task, val onDelete: () => Unit)
+        extends Component {
     def render() = {
-        var m = 0
-        ul(for(i <- 1 to n) yield
-            // TODO: Deal with compiler bug (n += 1 doesn't work)
-            li(s"Item no $i", onclick := {e =>
-                this.n = this.n + 1
-                js.Dynamic.global.console.log("D1", n)
-            })
-            //s"Item no $i"
+        li(onclick:={_ => task = task.copy(completed = !task.completed)},
+            span(task.text),
+            span(if(task.completed) img(alt:="C") else Seq()),
+            span("X", onclick:={_ => onDelete()})
+        )
+    }
+}
+
+class TodoDemo(var tasks: js.Array[Task]) extends Component {
+    def render() = {
+        div(
+            h1("TODO list"),
+            ul(tasks.syncMapWithIndex[TaskComponent](
+                _.task,
+                { case (t, i) =>
+                    new TaskComponent(t, () => tasks.remove(i)) })),
         )
     }
 }
@@ -23,13 +35,9 @@ class Counter(var n: Int) extends Component {
 object Test {
     @JSExportTopLevel("scalaJsTest")
     def test() = {
-        val el =
-            div(id := "x", cls := "something",
-                //onclick := {e => js.Dynamic.global.alert(e) },
-                span("Hello, world!"),
-                img(src := "funny.gif"),
-                new Counter(3),
-            )
-        el
+        div(new TodoDemo(Seq(
+            Task("Learn Scala"),
+            Task("Use liwec in a project"),
+        ).toJSArray))
     }
 }
