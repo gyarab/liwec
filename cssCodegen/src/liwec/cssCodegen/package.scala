@@ -1,3 +1,6 @@
+// This file is part of liwec and is licenced under the MPL v2.0
+// (c) 2019 David Koňařík
+
 package liwec.cssCodegen
 
 import java.util.Calendar
