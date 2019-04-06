@@ -16,6 +16,15 @@ lazy val root = (project in file("."))
     .dependsOn(macros, liwec)
     .aggregate(macros, liwec)
 
+lazy val sample = project
+    .settings(
+        name := "sample",
+        scalaSource in Compile := baseDirectory.value / "src",
+    )
+    .enablePlugins(ScalaJSPlugin)
+    .dependsOn(root)
+    .aggregate(root)
+
 lazy val liwec = project
     .settings(
         name := "liwec",
