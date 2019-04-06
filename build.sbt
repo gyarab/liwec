@@ -1,21 +1,24 @@
 scalaVersion := "2.12.6" //TODO: Scala.js is not yet updated
 organization := "smcds"
 
+scalacOptions += "-deprecation"
+scalacOptions += "-feature"
+
 lazy val root = (project in file("."))
     .settings(
         name := "liwec",
-		scalaSource in Compile := baseDirectory.value / "src",
+        scalaSource in Compile := baseDirectory.value / "src",
         libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.6",
         //scalacOptions += "-P:scalajs:sjsDefinedByDefault",
-        scalacOptions += "-deprecation",
-        scalacOptions += "-feature",
-		//scalaJsUseMainModuleInitializer := true,
+        //scalaJsUseMainModuleInitializer := true,
     )
-	.enablePlugins(ScalaJSPlugin)
+    .enablePlugins(ScalaJSPlugin)
+    .dependsOn(macros, cssDsl)
+    .aggregate(macros, cssDsl)
 
-lazy val codegen = (project in file("codegen"))
+lazy val htmlCodegen = project
     .settings(
-        name := "codegen",
+        name := "htmlCodegen",
         scalaSource in Compile := baseDirectory.value / "src",
         resolvers +=
             "Millhouse Bintray"
@@ -24,6 +27,29 @@ lazy val codegen = (project in file("codegen"))
             "org.jsoup" % "jsoup" % "1.11.3",
             "com.themillhousegroup" %% "scoup" % "0.4.6",
         ),
-        scalacOptions += "-deprecation",
-        scalacOptions += "-feature",
     )
+
+lazy val cssCodegen = project
+    .settings(
+        name := "cssCodegen",
+        scalaSource in Compile := baseDirectory.value / "src",
+        libraryDependencies ++= Seq(
+            "com.softwaremill.sttp" %% "core" % "1.5.11",
+            "com.lihaoyi" %% "upickle" % "0.7.1",
+        ),
+    )
+
+lazy val cssDsl = project
+    .settings(
+        name := "cssDsl",
+        scalaSource in Compile := baseDirectory.value / "src",
+    )
+
+lazy val macros = project
+    .settings(
+        name := "macros",
+        scalaSource in Compile := baseDirectory.value / "src",
+        libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.12.6",
+    )
+    .aggregate(cssDsl)
+    .dependsOn(cssDsl)

@@ -1,7 +1,7 @@
-package liwec.codegen
+package liwec.htmlCodegen
 
 import java.util.Calendar
-import liwec.codegen.mdnScraper._
+import liwec.htmlCodegen.mdnScraper._
 
 class TypeNamer {
     var i = 0;
@@ -84,7 +84,8 @@ import org.scalajs.dom._
 import liwec.htmlDslTypes._
 import liwec.domvm._
 
-package object htmlDsl {
+package object htmlDsl
+        extends Implicits {
     // Event types that aren't in scalajs-dom
     type MutationNameEvent = Event
     type SpeechSynthesisEvent = Event

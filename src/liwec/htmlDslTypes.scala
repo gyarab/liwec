@@ -6,23 +6,12 @@ import scalajs.js.annotation._
 import scalajs.js.JSConverters._
 import liwec.domvm._
 
-package object htmlDslTypes {
+package htmlDslTypes {
     trait VNodeApplicable[-T <: ElementVNode] extends js.Object {
         def applyTo(vn: T): Unit
     }
 
-    def arrayApplicableHelper(addee: js.Any, vn: ElementVNode) =
-        (vn.body: Any) match {
-            case body: String => {
-                vn.body = js.Array[js.Any](body, addee)
-            }
-            case body: js.Array[_] => {
-                body.asInstanceOf[js.Array[js.Any]].push(addee)
-            }
-            case null | () => { vn.body = js.Array[js.Any](addee) }
-        }
-
-    object Implicits {
+    trait Implicits {
         implicit class VNodeApplicableString(str: String)
                 extends VNodeApplicable[ElementVNode] {
             def applyTo(vn: ElementVNode) = (vn.body: Any) match {
@@ -72,6 +61,19 @@ package object htmlDslTypes {
             vnode
         }
     }
+}
+
+package object htmlDslTypes {
+    def arrayApplicableHelper(addee: js.Any, vn: ElementVNode) =
+        (vn.body: Any) match {
+            case body: String => {
+                vn.body = js.Array[js.Any](body, addee)
+            }
+            case body: js.Array[_] => {
+                body.asInstanceOf[js.Array[js.Any]].push(addee)
+            }
+            case null | () => { vn.body = js.Array[js.Any](addee) }
+        }
 
     def toJsType(x: Any) = x match {
         case x: Seq[_] => x.toJSArray

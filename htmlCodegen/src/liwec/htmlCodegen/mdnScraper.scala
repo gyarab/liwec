@@ -1,4 +1,4 @@
-package liwec.codegen
+package liwec.htmlCodegen
 
 import scala.annotation.tailrec
 import org.jsoup._
@@ -11,7 +11,7 @@ package object mdnScraper {
         name: String, description: String, elNames: Option[Seq[String]])
     case class EventDoc(name: String, jsType: String, description: String)
 
-    val mdnRootUrl = "https://developer.mozilla.org";
+    val mdnRootUrl = "https://developer.mozilla.org"
     val mdnEmptyElementListUrl =
         s"$mdnRootUrl/en-US/docs/Glossary/empty_element"
     val mdnElementListUrl = s"$mdnRootUrl/en-US/docs/Web/HTML/Element"
@@ -36,7 +36,7 @@ package object mdnScraper {
 
     def hasTag(tag: String)(el: Element) = el.tagName() == tag
     def articleSections(article: Element) =
-        article.children.toList .splitOn(hasTag("h2") _)
+        article.children.toList.splitOn(hasTag("h2") _)
 
     def elLinkToElName(elLink: Element) = elLink.attr("href").split("/").last
     def getEmptyElementList() = {
@@ -90,7 +90,9 @@ package object mdnScraper {
                 s.find(hasTag("h2") _)
                 .map(_.text() == "Standard events")
                 .getOrElse(false))
-            .flatMap(_.find(hasTag("table") _))
+            .head
+            .map(_.select("table"))
+            .find(_.size > 0)
             .head
         (for(row <- stdEvsTable.select("tbody tr")) yield {
             val evName = row.children().get(0).text().trim()
