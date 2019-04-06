@@ -1,5 +1,4 @@
-scalaVersion := "2.12.6" //TODO: Scala.js is not yet updated
-organization := "smcds"
+scalaVersion := "2.12.8"
 
 scalacOptions += "-deprecation"
 scalacOptions += "-feature"
@@ -7,6 +6,8 @@ scalacOptions += "-feature"
 lazy val root = (project in file("."))
     .settings(
         name := "liwec",
+        organization := "mocasys",
+        version := "1.0.0",
         scalaSource in Compile := baseDirectory.value / "src",
         libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.6",
         //scalacOptions += "-P:scalajs:sjsDefinedByDefault",
