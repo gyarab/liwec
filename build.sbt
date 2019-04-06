@@ -13,8 +13,25 @@ lazy val root = (project in file("."))
         //scalaJsUseMainModuleInitializer := true,
     )
     .enablePlugins(ScalaJSPlugin)
-    .dependsOn(macros, cssDsl)
-    .aggregate(macros, cssDsl)
+    .dependsOn(macros, liwec)
+    .aggregate(macros, liwec)
+
+lazy val liwec = project
+    .settings(
+        name := "liwec",
+        scalaSource in Compile := baseDirectory.value / "src",
+        libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.6",
+    )
+    .enablePlugins(ScalaJSPlugin)
+
+lazy val macros = project
+    .settings(
+        name := "macros",
+        scalaSource in Compile := baseDirectory.value / "src",
+        libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.12.6",
+    )
+    .aggregate(liwec)
+    .dependsOn(liwec)
 
 lazy val htmlCodegen = project
     .settings(
@@ -38,18 +55,3 @@ lazy val cssCodegen = project
             "com.lihaoyi" %% "upickle" % "0.7.1",
         ),
     )
-
-lazy val cssDsl = project
-    .settings(
-        name := "cssDsl",
-        scalaSource in Compile := baseDirectory.value / "src",
-    )
-
-lazy val macros = project
-    .settings(
-        name := "macros",
-        scalaSource in Compile := baseDirectory.value / "src",
-        libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.12.6",
-    )
-    .aggregate(cssDsl)
-    .dependsOn(cssDsl)

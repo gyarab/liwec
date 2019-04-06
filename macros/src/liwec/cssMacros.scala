@@ -3,6 +3,7 @@ package liwec
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox.Context
 import scala.language.dynamics
+import liwec.macroUtils._
 
 package object cssMacros {
     import scala.collection.mutable

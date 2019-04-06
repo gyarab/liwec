@@ -86,4 +86,24 @@ package object htmlDslTypes {
         def := (value: T) =
             new AttrWithValue(value)
     }
+
+    def scope(className: String, vn: VNode) = {
+        def addScopeAttr(vn: ElementVNode): Unit = {
+            if(vn.nodeType != 1) { // Element
+                return
+            }
+            vn.attrs("scope") = className
+            (vn.body: Any) match {
+                case children: js.Array[_] =>
+                    for(child <- children)
+                        child match {
+                            case _: js.Object => addScopeAttr(child.asInstanceOf[ElementVNode])
+                            case _ => {}
+                        }
+                case _ => {}
+            }
+        }
+        addScopeAttr(vn.asInstanceOf[ElementVNode])
+        vn
+    }
 }

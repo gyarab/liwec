@@ -236,7 +236,7 @@ package object htmlDsl
     /** Defines the first number if other than 1. */
     lazy val start = Attr[VNodeTagOl, String]("start")
     /**  */
-    lazy val scoped = Attr[VNodeTagStyle, String]("scoped")
+    lazy val scoped_ = Attr[VNodeTagStyle, String]("scoped")
     /** List of types the server accepts, typically a file type. */
     lazy val accept = Attr[AttrApplicable30, String]("accept")
     /** Defines a value which will be selected on page load. */

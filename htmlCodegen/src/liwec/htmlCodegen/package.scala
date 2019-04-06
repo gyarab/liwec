@@ -30,6 +30,7 @@ object Codegen {
         "for" -> "for_",
         "object" -> "object_",
         "var" -> "var_",
+        "scoped" -> "scoped_",
     )
 
     def renamedSym(sym: String) = {

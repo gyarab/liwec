@@ -5,6 +5,7 @@ import scalajs.js.JSConverters._
 import scalajs.js.annotation._
 import liwec.htmlDsl._
 import liwec.cssMacros._
+import liwec.htmlMacros._
 import liwec._
 
 case class Task(val text: String, val completed: Boolean = false)
@@ -16,13 +17,13 @@ class TaskComponent(var task: Task, val onDelete: () => Unit)
             color := "turquoise",
         )
     }
-    def render() = {
+    def render() = scoped(
         li(onclick:={_ => task = task.copy(completed = !task.completed)},
             span(task.text),
             span(if(task.completed) img(alt:="C") else Seq()),
             span("X", cls:="btn", onclick:={_ => onDelete()})
         )
-    }
+    )
 }
 
 class TodoDemo(var tasks: js.Array[Task]) extends Component {
