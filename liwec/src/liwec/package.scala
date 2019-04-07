@@ -17,18 +17,20 @@ abstract class VNode extends js.Object with VNodeApplicable[ElementVNode] {
 abstract class Component extends js.Object with VNodeApplicable[ElementVNode] {
     def render(): VNode
 
-    def applyTo(vn: ElementVNode) = {
+    def toVNode() = {
         val self = this
-        arrayApplicableHelper(
-            new ViewVNode {
-                @JSName("type")
-                val nodeType: Int = 4
-                val view = vm => {
-                    val component = self.createSetProxy(vm)
-                    () => component.render()
-                }
-            },
-            vn)
+        new ViewVNode {
+            @JSName("type")
+            val nodeType: Int = 4
+            val view = vm => {
+                val component = self.createSetProxy(vm)
+                () => component.render()
+            }
+        },
+    }
+
+    def applyTo(vn: ElementVNode) = {
+        arrayApplicableHelper(this.toVNode(), vn)
     }
 
     var changeCallbacks = Seq[this.type => Unit]()

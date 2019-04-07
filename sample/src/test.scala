@@ -6,6 +6,7 @@ package liwec.test
 import scalajs.js
 import scalajs.js.JSConverters._
 import scalajs.js.annotation._
+import org.scalajs.dom
 import liwec.htmlDsl._
 import liwec.cssMacros._
 import liwec.htmlMacros._
@@ -21,8 +22,10 @@ class TaskComponent(var task: Task, val onDelete: () => Unit)
         )
     }
     def render() = scoped(
-        li(onclick:={_ => task = task.copy(completed = !task.completed)},
-            span(task.text),
+        li(
+            span(task.text,
+                 onclick:={_ =>
+                     task = task.copy(completed = !task.completed)}),
             span(if(task.completed) img(alt:="C") else Seq()),
             span("X", cls:="btn", onclick:={_ => onDelete()})
         )
@@ -42,7 +45,8 @@ class TodoDemo(var tasks: js.Array[Task]) extends Component {
             ul(tasks.syncMapWithIndex[TaskComponent](
                 _.task,
                 { case (t, i) =>
-                    new TaskComponent(t, () => tasks.remove(i)) })),
+                    new TaskComponent(t, () => { tasks.remove(i) })
+                })),
         )
     }
 }
@@ -50,9 +54,11 @@ class TodoDemo(var tasks: js.Array[Task]) extends Component {
 object Test {
     @JSExportTopLevel("scalaJsTest")
     def test() = {
-        div(new TodoDemo(Seq(
-            Task("Learn Scala"),
-            Task("Use liwec in a project"),
-        ).toJSArray))
+        domvm.mountComponent(
+            dom.document.querySelector("body"),
+            new TodoDemo(Seq(
+                Task("Learn Scala"),
+                Task("Use liwec in a project"),
+            ).toJSArray))
     }
 }
