@@ -11,7 +11,7 @@ Scala classes. When a component's property is changed a "rerender" is
 triggered, which uses the underlying Mithril library to recreate the VDOM and
 synchronise it with the browser's own DOM. This allows the programmer to both
 think of the DOM as a function of the application's state and to write
-components as consise mutable objects.
+components as concise mutable objects.
 
 To allow for easy abstraction and syntax highlighting, VDOM (HTML) nodes are
 created by functions.
