@@ -24,10 +24,10 @@ class TaskComponent(var task: Task, val onDelete: () => Unit)
     def render() = scoped(
         li(
             span(task.text,
-                 onclick:={_ =>
+                 onClick:={_ =>
                      task = task.copy(completed = !task.completed)}),
             span(if(task.completed) img(alt:="C") else Seq()),
-            span("X", cls:="btn", onclick:={_ => onDelete()})
+            span("X", cls:="btn", onClick:={_ => onDelete()})
         )
     )
 }

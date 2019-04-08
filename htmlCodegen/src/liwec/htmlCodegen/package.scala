@@ -26,14 +26,14 @@ class TypeNamer {
 
 object Codegen {
     val symRenames = Map(
-        "type" -> "type_",
         "class" -> "cls",
-        "for" -> "for_",
-        "type" -> "type_",
-        "for" -> "for_",
-        "object" -> "object_",
-        "var" -> "var_",
-        "scoped" -> "scoped_",
+        "type" -> "typeAttr",
+        "for" -> "forAttr",
+        "type" -> "typeAttr",
+        "for" -> "forAttr",
+        "object" -> "objectAttr",
+        "var" -> "varAttr",
+        "scoped" -> "scopedAttr",
     )
 
     def renamedSym(sym: String) = {
