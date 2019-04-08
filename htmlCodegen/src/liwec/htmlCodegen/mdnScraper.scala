@@ -54,17 +54,15 @@ package object mdnScraper {
         val doc = Jsoup.connect(mdnElementListUrl).get()
         val parts = articleSections(doc.selectFirst("#wikiArticle"))
         (for(part <- parts;
-            h2 <- part.find(hasTag("h2") _);
-            table <- part.find(hasTag("table"))) yield {
-            for(row <- table.select("tbody tr")) yield {
-                val elLink = row.children.get(0).selectFirst("a")
-                val elName = elLinkToElName(elLink)
-                val description = row.children.get(1).text()
-                val empty = emptyElements contains elName
-                ElementDoc(elName, description, empty)
-            }
+             h2 <- part.find(hasTag("h2") _).toSeq;
+             table <- part.find(hasTag("table")).toSeq;
+             row <- table.select("tbody tr");
+             elLink <- row.children.get(0).select("a")) yield {
+            val elName = elLinkToElName(elLink)
+            val description = row.children.get(1).text()
+            val empty = emptyElements contains elName
+            ElementDoc(elName, description, empty)
         })
-        .flatten
         .groupBy(_.name)
         .map(_._2.head)
     }
