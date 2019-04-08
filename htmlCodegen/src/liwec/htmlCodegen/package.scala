@@ -120,7 +120,7 @@ package object htmlDsl
 "\n" +
     (for(ev <- events) yield
         s"""
-    lazy val on${attrName(ev.name)} = """ +
+    lazy val ${attrName("on-" + ev.name)} = """ +
         s"""Attr[ElementVNode, js.Function1[${ev.jsType}, Unit]]""" +
         s"""("on${ev.name}")""")
     .mkString("") +
