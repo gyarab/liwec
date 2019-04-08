@@ -5,17 +5,15 @@ scalacOptions += "-feature"
 
 val defaults = Seq(
     scalaSource in Compile := baseDirectory.value / "src",
-    skip in publish := true,
+    organization := "mocasys.liwec",
+    version := "1.0.0",
 )
 
 lazy val root = (project in file("."))
     .settings(
         defaults,
-        name := "liwec",
-        organization := "mocasys",
-        version := "1.0.0",
+        name := "root",
         libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.6",
-        skip in publish := false,
         //scalacOptions += "-P:scalajs:sjsDefinedByDefault",
         //scalaJsUseMainModuleInitializer := true,
     )
@@ -26,6 +24,7 @@ lazy val root = (project in file("."))
 lazy val sample = project
     .settings(
         defaults,
+        skip in publish := true,
         name := "sample",
     )
     .enablePlugins(ScalaJSPlugin)
@@ -53,6 +52,7 @@ lazy val htmlCodegen = project
     .settings(
         defaults,
         name := "htmlCodegen",
+        skip in publish := true,
         resolvers +=
             "Millhouse Bintray"
                 at "http://dl.bintray.com/themillhousegroup/maven",
@@ -66,6 +66,7 @@ lazy val cssCodegen = project
     .settings(
         defaults,
         name := "cssCodegen",
+        skip in publish := true,
         libraryDependencies ++= Seq(
             "com.softwaremill.sttp" %% "core" % "1.5.11",
             "com.lihaoyi" %% "upickle" % "0.7.1",
