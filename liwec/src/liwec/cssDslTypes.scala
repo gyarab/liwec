@@ -14,6 +14,7 @@ package cssDslTypes {
 
     trait Selector {
         def &(sel: Selector) = AndCombinator(this, sel)
+        def |(sel: Selector) = OrCombinator(this, sel)
         def /(sel: Selector) = DescCombinator(this, sel)
         def /+(sel: Selector) = AdjSiblingCombinator(this, sel)
         def /~(sel: Selector) = GenSiblingCombinator(this, sel)
@@ -47,9 +48,10 @@ package cssDslTypes {
         override def css = s"${this.sel1.css}${this.sep}${this.sel2.css}"
     }
 
-    // XXX: Dillema. Should this have an array of selectors or just two?
     case class AndCombinator(sel1: Selector, sel2: Selector)
             extends Combinator(sel1, sel2, "")
+    case class OrCombinator(sel1: Selector, sel2: Selector)
+            extends Combinator(sel1, sel2, ", ")
     case class DescCombinator(sel1: Selector, sel2: Selector)
             extends Combinator(sel1, sel2, " ")
     case class AdjSiblingCombinator(sel1: Selector, sel2: Selector)
