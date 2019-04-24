@@ -28,7 +28,7 @@ package object routing {
                             if(partEquiv != part) None
                             else {
                                 val rest = pathStr.drop(i + part.length)
-                                                .takeWhile(_ != '/')
+                                                  .takeWhile(_ != '/')
                                 val newI = i + part.length + rest.length
                                 val newParams =
                                     if(params.length == sc.parts.length - 1) {
@@ -36,7 +36,7 @@ package object routing {
                                             None
                                         else Some(params)
                                     } else Some(rest :: params)
-                                newParams .map(np => (newI, np))
+                                newParams.map(np => (newI, np))
                             }
                         }
                 }

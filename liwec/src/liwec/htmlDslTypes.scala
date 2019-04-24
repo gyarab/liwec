@@ -34,6 +34,11 @@ package htmlDslTypes {
                 extends VNodeApplicable[T] {
             def applyTo(vn: T) = for(appl <- iterable) appl.applyTo(vn)
         }
+        implicit class VNodeApplicableOption[-T <: ElementVNode]
+                (option: Option[T])
+                extends VNodeApplicable[T] {
+            def applyTo(vn: T) = for(appl <- option) appl.applyTo(vn)
+        }
         implicit class JsArraySyncMap[T](arr: js.Array[T]) {
             def syncMapWithIndex[C <: Component]
                     (itemGetter: C => T, constructor: (T, Int) => C) =
