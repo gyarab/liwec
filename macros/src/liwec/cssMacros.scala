@@ -13,10 +13,8 @@ package object cssMacros {
     import java.nio.file.{Paths, Files, Path}
     import liwec.cssDslTypes._
 
-    var outDirCleaned = false
-
     // This code hopes that PWD is the SBT project dir
-    def getCssOutDir(subDir: String) = {
+    def getCssOutDir() = {
         def getOutDir(startPath: Path): Path = {
             val path = startPath.resolve("target")
             if(Files.isDirectory(path)) {
@@ -32,23 +30,15 @@ package object cssMacros {
             }
         }
         val dirTarget = getOutDir(Paths.get("."))
-        val dirCss = dirTarget.resolve("css").resolve(subDir)
+        val dirCss = dirTarget.resolve("css")
         if(!Files.exists(dirCss)) {
             Files.createDirectories(dirCss)
         }
         dirCss
     }
 
-    def getCssOutPath(subDir: String, className: String) = {
-        getCssOutDir(subDir).resolve(className + ".css")
-    }
-
-    def cleanOutDir() = {
-        if(!outDirCleaned) {
-            Files.list(getCssOutDir("out")).forEach(Files.delete)
-
-            outDirCleaned = true
-        }
+    def getCssOutPath(className: String) = {
+        getCssOutDir().resolve(className + ".css")
     }
 
     def cssBlockToRules(c: Context)(body: c.Tree) = {
@@ -91,9 +81,9 @@ package object cssMacros {
         import c.universe._
         val className =
             enclosingClassSym(c).fullName.replaceAll("[^a-zA-Z0-9]", "-")
+        println(s"D1 $className")
 
-        cleanOutDir()
-        val path = getCssOutPath("cache", className)
+        val path = getCssOutPath(className)
         if(Files.exists(path)) {
             val firstLine = Files.lines(path).findFirst().get()
             if(!firstLine.startsWith("/* ")) {
@@ -113,7 +103,6 @@ package object cssMacros {
         val cssStr = rules.map(_.toString).mkString("\n")
         Files.write(path, ("/* TODO */\n" + cssStr).getBytes())
         //}
-        Files.copy(path, getCssOutPath("out", className))
 
         q""
     }
