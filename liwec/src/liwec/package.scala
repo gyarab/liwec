@@ -85,6 +85,7 @@ abstract class Component extends Watched with VNodeApplicable[ElementVNode] {
     var vm: Option[ViewModel] = None
 
     def render(): VNode
+    def onMount() = ()
 
     def toVNode() = {
         val self = this
@@ -94,6 +95,7 @@ abstract class Component extends Watched with VNodeApplicable[ElementVNode] {
             val view = vm => {
                 self.vm = Some(vm)
                 val component = self.createSetProxy(vm)
+                component.onMount()
                 () => component.render()
             }
         },

@@ -89,6 +89,11 @@ import liwec.domvm._
 
 package object htmlDsl
         extends Implicits {
+    // Unfortunately, this has to be here, as there can't be multiple
+    // package objects with the same name and type aliases aren't allowed
+    // in regular packages.
+    type VNodeFrag = VNodeApplicable[ElementVNode]
+
     // Event types that aren't in scalajs-dom
     type MutationNameEvent = Event
     type SpeechSynthesisEvent = Event
