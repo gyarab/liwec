@@ -85,7 +85,6 @@ package liwec
 
 import scalajs.js
 import org.scalajs.dom._
-import liwec.htmlDslTypes._
 import liwec.domvm._
 
 package object htmlDsl

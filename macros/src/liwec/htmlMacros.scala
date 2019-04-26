@@ -5,7 +5,8 @@ package liwec
 
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox.Context
-import liwec.htmlDslTypes._
+import liwec.htmlDsl._
+import liwec.htmlDslHelpers._
 import liwec.macroUtils._
 
 package object htmlMacros {
@@ -14,6 +15,6 @@ package object htmlMacros {
         import c.universe._
         val className =
             enclosingClassSym(c).fullName.replaceAll("[^a-zA-Z0-9]", "-")
-        q"liwec.htmlDslTypes.scope($className, $vn)"
+        q"liwec.htmlDslHelpers.scopeVNode($className, $vn)"
     }
 }

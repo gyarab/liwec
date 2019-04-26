@@ -9,7 +9,9 @@ import scalajs.js.annotation._
 import scalajs.js.JSConverters._
 import liwec.domvm._
 
-package htmlDslTypes {
+package htmlDsl {
+    import htmlDslHelpers._
+
     trait VNodeApplicable[-T <: ElementVNode] extends js.Object {
         def applyTo(vn: T): Unit
     }
@@ -69,9 +71,17 @@ package htmlDslTypes {
             vnode
         }
     }
+
+    case class Attr[-N <: ElementVNode, T](name: String) {
+        class AttrWithValue(value: T) extends VNodeApplicable[N] {
+            def applyTo(vn: N) = { vn.attrs(name) = toJsType(value) }
+        }
+        def := (value: T) =
+            new AttrWithValue(value)
+    }
 }
 
-package object htmlDslTypes {
+package object htmlDslHelpers {
     def arrayApplicableHelper(addee: js.Any, vn: ElementVNode) =
         (vn.body: Any) match {
             case body: String => {
@@ -87,15 +97,8 @@ package object htmlDslTypes {
         case x: Seq[_] => x.toJSArray
         case x => x
     }
-    case class Attr[-N <: ElementVNode, T](name: String) {
-        class AttrWithValue(value: T) extends VNodeApplicable[N] {
-            def applyTo(vn: N) = { vn.attrs(name) = toJsType(value) }
-        }
-        def := (value: T) =
-            new AttrWithValue(value)
-    }
 
-    def scope(className: String, vn: VNode) = {
+    def scopeVNode(className: String, vn: VNode) = {
         def addScopeAttr(vn: ElementVNode): Unit = {
             if(vn.nodeType != 1) { // Element
                 return

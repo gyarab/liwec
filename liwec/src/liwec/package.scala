@@ -7,7 +7,8 @@ import scalajs.js
 import scalajs.js.annotation._
 import scalajs.js.|
 import org.scalajs.dom
-import liwec.htmlDslTypes._
+import liwec.htmlDsl._
+import liwec.htmlDslHelpers._
 import liwec.domvm._
 
 abstract class VNode extends js.Object with VNodeApplicable[ElementVNode] {

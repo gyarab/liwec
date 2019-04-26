@@ -81,7 +81,6 @@ package object cssMacros {
         import c.universe._
         val className =
             enclosingClassSym(c).fullName.replaceAll("[^a-zA-Z0-9]", "-")
-        println(s"D1 $className")
 
         val path = getCssOutPath(className)
         if(Files.exists(path)) {
