@@ -1,18 +1,29 @@
 package liwec
 
+import scala.collection.mutable
 import org.scalajs.dom
+import liwec.htmlDsl._
 
 package object routing {
     /** This class deals with "simulating" link-based navigation in an SPA. */
     abstract class Router {
         import dom.window._
 
+        val onUrlChangeListeners = mutable.ArrayBuffer[() => Unit]()
+
         def matchUrl(url: String): Component
 
-        def goToUrl(url: String) =
+        def goToUrl(url: String) = {
             // Not using the stored objects is a conscious decision, so that pages
             // can be linked externally.
             history.pushState(null, "", location.origin + "/" + url)
+            onUrlChangeListeners.foreach(_())
+        }
+
+        def link(url: String, frags: VNodeApplicable[VNodeTagA]*) =
+            a(href := url,
+              onClick := { _ => this.goToUrl(url) },
+              frags)
 
         def currentComponent =
             this.matchUrl(location.pathname)
